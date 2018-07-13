@@ -18,15 +18,12 @@ setup(
     platforms=['any'],
     download_url='https://github.com/asmodius/sanic-scheduler/archive/master.zip',
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: MIT License',
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
-    # zip_safe=False,
-    packages=find_packages(exclude=["tests"]),
-    # setup_requires=open("requirements.txt").read().split("\n"),
-    # install_requires=open("requirements.txt").read().split("\n"),
+    packages=find_packages(exclude=['tests', 'example']),
     tests_require=['pytest'],
 )
