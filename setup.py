@@ -5,6 +5,9 @@ with open('sanic_scheduler/__init__.py', 'r') as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         fd.read(), re.MULTILINE).group(1)
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
     name='sanic-scheduler',
     version=version,
@@ -13,7 +16,8 @@ setup(
     author='Asmodius',
     author_email='asmodius.a@gmail.com',
     description='running functions on a schedule for Sanic',
-    long_description=open('README.md').read(),
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     keywords='sanic schedule',
     platforms=['any'],
     download_url='https://github.com/asmodius/sanic-scheduler/archive/master.zip',
