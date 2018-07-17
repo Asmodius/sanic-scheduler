@@ -1,11 +1,12 @@
 import asyncio
-import datetime
 import inspect
 import logging
 import traceback
+from datetime import timedelta, time, datetime
+from typing import Union, Optional
 
 
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 
 __all__ = ('task', 'SanicScheduler')
 
@@ -15,7 +16,8 @@ _tasks = []
 _wrk = []
 
 
-def task(period: datetime.timedelta, start: datetime.time = None):
+def task(period: timedelta,
+         start: Optional[Union[timedelta, time]] = None):
     """Decorate the function to run on schedule."""
     def wrapper(fn):
         _tasks.append(Task(fn, period, start))
@@ -55,15 +57,18 @@ class Task:
 
     def _next_run(self, utc):
         if utc:
-            now = datetime.datetime.utcnow().replace(microsecond=0)
+            now = datetime.utcnow().replace(microsecond=0)
         else:
-            now = datetime.datetime.now().replace(microsecond=0)
+            now = datetime.now().replace(microsecond=0)
 
         if self.last_run is None:
             if self.start is not None:
-                d1 = datetime.datetime.combine(datetime.datetime.min, self.start)
-                d2 = datetime.datetime.combine(datetime.datetime.min, now.time())
-                self.last_run = now + datetime.timedelta(seconds=(d1 - d2).seconds) - self.period
+                if isinstance(self.start, time):
+                    d1 = datetime.combine(datetime.min, self.start)
+                    d2 = datetime.combine(datetime.min, now.time())
+                    self.start = timedelta(seconds=(d1 - d2).seconds)
+
+                self.last_run = now + self.start - self.period
             else:
                 self.last_run = now
 
