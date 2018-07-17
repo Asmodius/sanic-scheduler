@@ -1,8 +1,9 @@
 import asyncio
-from datetime import timedelta, time, datetime
+from datetime import datetime, time, timedelta
 
 from sanic import Sanic
-from sanic_scheduler import task, SanicScheduler
+
+from sanic_scheduler import SanicScheduler, task
 
 
 app = Sanic()

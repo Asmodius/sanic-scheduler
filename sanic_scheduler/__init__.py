@@ -2,8 +2,8 @@ import asyncio
 import inspect
 import logging
 import traceback
-from datetime import timedelta, time, datetime
-from typing import Union, Optional
+from datetime import datetime, time, timedelta
+from typing import Optional, Union
 
 
 __version__ = '1.0.4'
