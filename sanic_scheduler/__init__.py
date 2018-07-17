@@ -6,7 +6,7 @@ from datetime import datetime, time, timedelta
 from typing import Optional, Union
 
 
-__version__ = '1.0.4'
+__version__ = '1.0.5'
 
 __all__ = ('task', 'SanicScheduler')
 
@@ -16,7 +16,7 @@ _tasks = []
 _wrk = []
 
 
-def task(period: timedelta,
+def task(period: Optional[timedelta] = None,
          start: Optional[Union[timedelta, time]] = None):
     """Decorate the function to run on schedule."""
     def wrapper(fn):
@@ -68,18 +68,25 @@ class Task:
                     d2 = datetime.combine(datetime.min, now.time())
                     self.start = timedelta(seconds=(d1 - d2).seconds)
 
-                self.last_run = now + self.start - self.period
+                self.last_run = now + self.start
             else:
                 self.last_run = now
 
-        while self.last_run <= now:
-            self.last_run += self.period
+        elif self.period is None:
+            return
+
+        else:
+            while self.last_run <= now:
+                self.last_run += self.period
 
         return self.last_run - now
 
     async def run(self, app, utc=True):
         while True:
             delta = self._next_run(utc)
+            if delta is None:
+                logger.info('STOP TASK "%s"' % self.func_name)
+                break
             logger.debug('NEXT TASK "%s" %s' % (self.func_name, delta))
             await asyncio.sleep(delta.seconds)
             logger.info('RUN TASK "%s"' % self.func_name)

@@ -30,5 +30,11 @@ def baz(_):
     print("Baz", datetime.now())
 
 
+@task(start=timedelta(seconds=10))
+def another(_):
+    """Run the function after 10 seconds once."""
+    print("another", datetime.now())
+
+
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5000, debug=True)
