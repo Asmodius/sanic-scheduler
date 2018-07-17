@@ -1,6 +1,6 @@
-# SanicScheduler
+# Sanic Scheduler
 
-SanicScheduler runs a functions on a schedule.
+Sanic Scheduler runs a functions on a schedule.
 
 ## Installation
 
@@ -9,7 +9,7 @@ Automatic installation:
 $ pip install sanic-scheduler
 ```
 
-SanicScheduler is listed in [PyPI](https://pypi.python.org/pypi/sanic-scheduler) and can be installed with pip or easy_install.
+Sanic Scheduler is listed in [PyPI](https://pypi.python.org/pypi/sanic-scheduler) and can be installed with pip or easy_install.
 
 Manual installation:
 ```bash
@@ -18,7 +18,7 @@ $ cd sanic_scheduler
 $ python setup.py install
 ```
 
-SanicScheduler source code is [hosted on GitHub](https://github.com/asmodius/sanic-scheduler)
+Sanic Scheduler source code is [hosted on GitHub](https://github.com/asmodius/sanic-scheduler)
 
 ## Usage
 
@@ -51,7 +51,7 @@ async def foo_bar(_):
 
 @task(timedelta(minutes=2), timedelta(seconds=10))
 def baz(_):
-    """Runs the function every 2 minutes hours after 10 seconds."""
+    """Runs the function every 2 minutes after 10 seconds."""
     print("Baz", datetime.now())
 
 

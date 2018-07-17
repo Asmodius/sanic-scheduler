@@ -26,7 +26,7 @@ async def foo_bar(_):
 
 @task(timedelta(minutes=2), timedelta(seconds=10))
 def baz(_):
-    """Runs the function every 2 minutes hours after 10 seconds."""
+    """Runs the function every 2 minutes after 10 seconds."""
     print("Baz", datetime.now())
 
 
