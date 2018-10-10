@@ -3,12 +3,12 @@ import inspect
 import logging
 import traceback
 from datetime import datetime, time, timedelta
-from typing import Optional, Union
+from typing import Callable, Optional, Union
 
 
-__version__ = '1.0.5'
+__version__ = '1.0.6'
 
-__all__ = ('task', 'SanicScheduler')
+__all__ = ('task', 'SanicScheduler', 'make_task')
 
 logger = logging.getLogger('scheduler')
 
@@ -16,11 +16,18 @@ _tasks = []
 _wrk = []
 
 
+def make_task(fn: Callable,
+              period: Optional[timedelta] = None,
+              start: Optional[Union[timedelta, time]] = None) -> None:
+    """Make task."""
+    _tasks.append(Task(fn, period, start))
+
+
 def task(period: Optional[timedelta] = None,
          start: Optional[Union[timedelta, time]] = None):
     """Decorate the function to run on schedule."""
     def wrapper(fn):
-        _tasks.append(Task(fn, period, start))
+        make_task(fn, period, start)
         return fn
     return wrapper
 
@@ -48,7 +55,10 @@ class SanicScheduler:
 
 
 class Task:
-    def __init__(self, func, period, start):
+    def __init__(self,
+                 func: Callable,
+                 period: Optional[timedelta],
+                 start: Optional[Union[timedelta, time]]):
         self.func = func
         self.func_name = func.__name__
         self.period = period
