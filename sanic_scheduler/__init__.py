@@ -6,13 +6,11 @@ from datetime import datetime, time, timedelta
 from typing import Callable, Optional, Union
 
 
-__version__ = '1.0.6'
-
 __all__ = ('task', 'SanicScheduler', 'make_task')
 
 logger = logging.getLogger('scheduler')
 
-_tasks = []
+_tasks = {}
 _wrk = []
 
 
@@ -20,7 +18,7 @@ def make_task(fn: Callable,
               period: Optional[timedelta] = None,
               start: Optional[Union[timedelta, time]] = None) -> None:
     """Make task."""
-    _tasks.append(Task(fn, period, start))
+    _tasks[fn] = Task(fn, period, start)
 
 
 def task(period: Optional[timedelta] = None,
@@ -43,7 +41,7 @@ class SanicScheduler:
 
         @app.listener("after_server_start")
         async def run_scheduler(_app, loop):
-            for i in _tasks:
+            for i in _tasks.values():
                 _wrk.append(loop.create_task(i.run(_app, utc)))
 
         @app.listener("before_server_stop")
@@ -52,6 +50,10 @@ class SanicScheduler:
                 i.cancel()
 
         return self
+
+    @classmethod
+    def task_info(cls):
+        return _tasks
 
 
 class Task:
@@ -98,7 +100,7 @@ class Task:
                 logger.info('STOP TASK "%s"' % self.func_name)
                 break
             logger.debug('NEXT TASK "%s" %s' % (self.func_name, delta))
-            await asyncio.sleep(delta.seconds)
+            await asyncio.sleep(int(delta.total_seconds()))
             logger.info('RUN TASK "%s"' % self.func_name)
             try:
                 ret = self.func(app)
